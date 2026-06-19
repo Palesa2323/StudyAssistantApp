@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,10 +25,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -42,9 +41,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studyassistantapp.ui.theme.StudyAssistantAppTheme
 
 data class StudyTask(
+    val id: Int,
     val title: String,
     val subject: String,
-    val dueDate: String
+    val dueDate: String,
+    val priority: String,
+    val studyTimeMinutes: Int,
+    val notes: String,
+    val isCompleted: Boolean = false
 )
 
 class MainActivity : ComponentActivity() {
@@ -58,8 +62,24 @@ class MainActivity : ComponentActivity() {
 
                 val tasks = remember {
                     mutableStateListOf(
-                        StudyTask("Revise Biology notes", "Biology", "Today"),
-                        StudyTask("Practice algebra questions", "Math", "Tomorrow")
+                        StudyTask(
+                            id = 1,
+                            title = "Revise Biology notes",
+                            subject = "Biology",
+                            dueDate = "Today",
+                            priority = "High",
+                            studyTimeMinutes = 30,
+                            notes = "Focus on cell structure diagrams"
+                        ),
+                        StudyTask(
+                            id = 2,
+                            title = "Practice algebra questions",
+                            subject = "Math",
+                            dueDate = "Tomorrow",
+                            priority = "Medium",
+                            studyTimeMinutes = 45,
+                            notes = "Complete questions 1 to 10"
+                        )
                     )
                 }
 
@@ -177,6 +197,12 @@ fun TaskCard(task: StudyTask) {
 
             Text(text = "Subject: ${task.subject}")
             Text(text = "Due: ${task.dueDate}")
+            Text(text = "Priority: ${task.priority}")
+            Text(text = "Study time: ${task.studyTimeMinutes} minutes")
+
+            if (task.notes.isNotBlank()) {
+                Text(text = "Notes: ${task.notes}")
+            }
         }
     }
 }
@@ -268,9 +294,14 @@ fun AddTaskScreen(
                 onClick = {
                     onAddTask(
                         StudyTask(
+                            id = System.currentTimeMillis().toInt(),
                             title = title,
                             subject = subject,
-                            dueDate = dueDate
+                            dueDate = dueDate,
+                            priority = "Medium",
+                            studyTimeMinutes = 30,
+                            notes = "",
+                            isCompleted = false
                         )
                     )
 
@@ -301,8 +332,24 @@ fun HomeScreenPreview() {
         HomeScreen(
             navController = navController,
             tasks = listOf(
-                StudyTask("Read English notes", "English", "Today"),
-                StudyTask("Complete science worksheet", "Science", "Monday")
+                StudyTask(
+                    id = 1,
+                    title = "Read English notes",
+                    subject = "English",
+                    dueDate = "Today",
+                    priority = "High",
+                    studyTimeMinutes = 25,
+                    notes = "Focus on poetry analysis"
+                ),
+                StudyTask(
+                    id = 2,
+                    title = "Complete science worksheet",
+                    subject = "Science",
+                    dueDate = "Monday",
+                    priority = "Medium",
+                    studyTimeMinutes = 40,
+                    notes = "Revise before answering"
+                )
             )
         )
     }
